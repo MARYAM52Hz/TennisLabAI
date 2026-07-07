@@ -1,0 +1,28 @@
+# Core scientific computing
+numpy
+pandas
+scipy
+
+# Computer Vision
+opencv-python
+
+# Deep Learning
+torch
+torchvision
+
+# Pose Estimation
+mediapipe
+
+# Object Detection
+ultralytics
+
+# Visualization
+matplotlib
+plotly
+
+# Data Processing
+scikit-learn
+
+# Jupyter Environment
+jupyter
+notebook
