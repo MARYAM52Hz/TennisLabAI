@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+
+message: "If you use this software, please cite it as below."
+
+title: "TennisLabAI: A Multimodal AI Framework for Tennis Biomechanics"
+
+type: software
+
+authors:
+  - family-names: "Abbasi"
+    given-names: "Maryam"
+
+version: 0.1.0
+
+date-released: "2026-07-07"
+
+license: MIT
+
+abstract: >
+  TennisLabAI is an open research framework for multimodal tennis biomechanics
+  analysis using wearable inertial sensors, markerless motion capture,
+  musculoskeletal simulation, and artificial intelligence.
+
+keywords:
+  - tennis biomechanics
+  - inertial measurement units
+  - markerless motion capture
+  - computer vision
+  - OpenSim
+  - artificial intelligence
+
+repository-code: "https://github.com/YOUR_USERNAME/TennisLabAI"
