@@ -1,15 +1,19 @@
 # Documentation
 
-This directory contains the documentation for the TennisLabAI project.
+This directory serves as the research notebook of the TennisLabAI project.
 
-Contents may include:
+It documents the scientific design, technical decisions, experimental protocols, literature review, and project evolution throughout the research lifecycle.
 
-- Project architecture
-- Research questions
-- Experimental protocols
-- Dataset description
-- Literature review
-- Development roadmap
-- User and developer guides
+## Contents
 
-The documentation will evolve throughout the project lifecycle.
+- architecture.md — System architecture
+- research_questions.md — Research objectives and hypotheses
+- literature_review.md — Summary of related work
+- experimental_protocol.md — Experimental design
+- decision_log.md — Design decisions
+- roadmap.md — Project milestones
+- dataset.md — Dataset documentation
+- glossary.md — Technical terminology
+- references.md — Bibliography and external resources
+
+The documentation evolves together with the project.
