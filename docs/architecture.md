@@ -1,268 +1,172 @@
-# System Architecture
+# Data Architecture
 
 ## Overview
 
-TennisLabAI is a modular research framework for multimodal biomechanical analysis of tennis. The framework integrates wearable inertial sensing, markerless computer vision, musculoskeletal simulation, and artificial intelligence into a unified and reproducible pipeline.
+TennisLabAI follows a multimodal data architecture designed to integrate heterogeneous biomechanical data sources.
 
-The primary objective is to investigate whether markerless computer vision can provide biomechanical measurements comparable to laboratory-grade wearable IMU systems and to explore how multimodal sensor fusion can improve the accuracy and robustness of biomechanical analysis.
+The framework combines wearable inertial measurements, RGB video recordings, anthropometric information, and simulation outputs into a unified analysis pipeline.
 
----
+The data architecture is designed to ensure:
 
-# System Objectives
-
-The architecture has been designed to achieve the following goals:
-
-* Collect synchronized multimodal biomechanical data.
-* Estimate human motion using both wearable sensors and computer vision.
-* Compare laboratory measurements with markerless motion capture.
-* Fuse complementary sensing modalities.
-* Estimate musculoskeletal variables using OpenSim.
-* Develop explainable AI models for performance assessment and injury risk analysis.
-* Provide a reproducible research platform for sports biomechanics.
-
----
-
-# Design Principles
-
-The architecture follows several guiding principles:
-
-* Modular design
 * Reproducibility
-* Extensibility
-* Sensor independence
-* Open-source implementation
-* Scientific transparency
-
-Each module can be developed, tested, and replaced independently without affecting the overall system.
+* Traceability
+* Synchronization between modalities
+* Standardized data processing
+* Scientific validation
 
 ---
 
-# High-Level Architecture
+# Data Sources
 
-The system consists of seven major modules:
-
-1. Data Acquisition
-2. Pose Estimation
-3. IMU Processing
-4. Sensor Fusion
-5. Musculoskeletal Simulation
-6. Machine Learning
-7. Evaluation and Visualization
-
-Each module receives standardized inputs and produces well-defined outputs.
+The framework considers four primary data sources.
 
 ---
 
-# Data Acquisition
+## 1. Wearable Sensor Data
 
-## Inputs
+### Source
 
-The framework acquires synchronized information from multiple sensing modalities.
+Noraxon Ultium myoMOTION IMU system
 
-### Wearable Sensors
+### Raw Data
 
-* Noraxon Ultium myoMOTION IMUs
+The system records inertial measurements from body-mounted sensors.
+
+Examples:
+
 * Segment orientation
 * Angular velocity
 * Linear acceleration
+* Sensor timestamps
 
-### Camera System
+### Data Format
 
-* RGB video
-* High-speed video (optional)
-* Multi-camera setup (optional)
+Possible formats:
 
-### Subject Metadata
+* CSV
+* C3D
+* Manufacturer-specific formats
 
-* Anthropometric measurements
-* Participant information
-* Experimental conditions
+### Processing
 
----
-
-# Pose Estimation Module
-
-Purpose:
-
-Estimate human body kinematics from RGB videos without physical markers.
-
-Possible methods include:
-
-* MediaPipe Pose
-* RTMPose
-* OpenCap
-* Future markerless pose estimation methods
-
-Outputs include:
-
-* 2D keypoints
-* 3D joint coordinates
-* Joint trajectories
-* Confidence scores
-
----
-
-# IMU Processing Module
-
-Purpose:
-
-Process wearable inertial measurements collected during tennis movements.
-
-Processing steps include:
+Raw IMU data undergo:
 
 * Calibration
+* Filtering
 * Synchronization
-* Noise filtering
-* Drift compensation
 * Coordinate transformation
 * Feature extraction
 
-Outputs include:
+### Outputs
+
+Processed biomechanical variables:
 
 * Joint angles
-* Angular velocity
 * Segment orientation
+* Angular velocity
 * Range of motion
 
 ---
 
-# Sensor Fusion Module
+# 2. Video Data
 
-Purpose:
+## Source
 
-Combine information obtained from wearable sensors and computer vision.
+RGB cameras and high-speed cameras
 
-Potential fusion methods include:
+## Raw Data
 
-* Kalman Filtering
-* Extended Kalman Filter
-* Complementary Filtering
-* Deep Learning Fusion
+Video recordings of tennis movements.
 
-Expected outputs:
+Examples:
 
-* Refined joint kinematics
-* Improved robustness
-* Reduced estimation error
+* Serve
+* Forehand
+* Backhand
+* Volley
 
----
+## Processing
 
-# Musculoskeletal Simulation
+Video data are processed through:
 
-Purpose:
+* Frame extraction
+* Camera calibration
+* Pose estimation
+* Temporal tracking
 
-Estimate biomechanical variables that cannot be measured directly.
+## Outputs
 
-OpenSim will be used for:
+Computer vision-based measurements:
 
-* Inverse Kinematics
-* Inverse Dynamics
-* Joint Moments
-* Joint Reaction Forces
-* Muscle Force Estimation
-
-Outputs provide physiologically meaningful interpretations of human movement.
+* 2D keypoints
+* 3D joint coordinates
+* Skeleton trajectories
+* Movement features
 
 ---
 
-# Machine Learning Module
+# 3. Subject and Experimental Metadata
 
-Purpose:
+Metadata provides contextual information required for biomechanical interpretation.
 
-Learn predictive models from biomechanical data.
+Examples:
 
-Potential applications include:
+* Participant ID
+* Anthropometric measurements
+* Playing experience
+* Trial information
+* Equipment information
+* Environmental conditions
 
-* Performance evaluation
-* Technique classification
-* Injury risk prediction
-* Skill assessment
-* Movement quality estimation
-
-Candidate algorithms may include:
-
-* Random Forest
-* XGBoost
-* LSTM
-* Transformers
-* Graph Neural Networks
+Metadata will be stored separately from raw measurements to maintain data organization and privacy.
 
 ---
 
-# Evaluation Module
+# 4. Simulation Data
 
-The framework will compare multiple sensing modalities using quantitative metrics.
+## Source
 
-Evaluation may include:
+OpenSim musculoskeletal simulation pipeline
 
-* RMSE
-* MAE
-* Pearson Correlation
-* Intraclass Correlation Coefficient (ICC)
-* Bland–Altman Analysis
+## Inputs
 
-The objective is to determine the agreement between laboratory-grade measurements and markerless computer vision.
+* Human kinematics
+* Subject-specific models
+* External measurements
 
----
+## Outputs
 
-# Visualization
+Biomechanical variables:
 
-The framework will provide multiple visualization tools, including:
-
-* Skeleton animation
-* Joint trajectories
-* Biomechanical plots
-* Comparative graphs
-* Interactive dashboards
-
-Visualization supports both scientific interpretation and practical coaching applications.
+* Joint moments
+* Joint reaction forces
+* Muscle forces
+* Muscle activation estimates
 
 ---
 
-# Expected Outputs
+# Data Processing Pipeline
 
-The complete framework is expected to generate:
+The general data flow is:
 
-* Synchronized multimodal datasets
-* Markerless motion estimates
-* IMU-derived biomechanical variables
-* Musculoskeletal simulations
-* Machine learning predictions
-* Statistical validation reports
-* Publication-quality figures
-
----
-
-# Future Extensions
-
-The architecture has been intentionally designed to support future developments, including:
-
-* Real-time biomechanical feedback
-* Edge AI deployment
-* Additional wearable sensors (EMG, force insoles)
-* Foundation models for human movement
-* Robotics and human–robot interaction applications
-* Extension to sports beyond tennis
-
----
-
-# System Workflow
-
-The overall workflow can be summarized as:
-
-Athlete
+```
+Raw Data
 
 ↓
 
-Wearable IMUs + RGB Cameras
+Data Organization
 
 ↓
 
-Synchronized Data Acquisition
+Calibration and Synchronization
 
 ↓
 
-Pose Estimation + IMU Processing
+Preprocessing
+
+↓
+
+Feature Extraction
 
 ↓
 
@@ -270,7 +174,7 @@ Sensor Fusion
 
 ↓
 
-OpenSim Musculoskeletal Simulation
+Biomechanical Analysis
 
 ↓
 
@@ -278,13 +182,57 @@ Machine Learning
 
 ↓
 
-Evaluation
+Results
+```
 
-↓
+---
 
-Visualization
+# Data Organization
 
-↓
+The repository follows a structured data organization:
 
-Scientific Analysis and Decision Support
+```
+data/
+
+├── raw/
+│   ├── imu/
+│   ├── video/
+│   └── metadata/
+│
+├── processed/
+│   ├── kinematics/
+│   ├── features/
+│   └── synchronized/
+│
+└── external/
+    └── reference datasets/
+```
+
+---
+
+# Data Reproducibility
+
+Each experiment should include:
+
+* Dataset version
+* Processing configuration
+* Software version
+* Model version
+* Experimental conditions
+
+All transformations from raw data to final results should be traceable.
+
+---
+
+# Data Privacy and Management
+
+Participant-related information should be anonymized.
+
+Sensitive information should not be stored in public repositories.
+
+Large experimental datasets will be managed separately using appropriate storage solutions.
+
+```
+```
+
 
