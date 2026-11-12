@@ -1,0 +1,290 @@
+{
+ "A": {
+  "frames": {
+   "trophy": 12,
+   "low": 20,
+   "contact": 23.26
+  },
+  "times_ms": {
+   "trophy_to_contact": 375,
+   "low_to_contact": 109
+  },
+  "trophy": {
+   "kneeFront": 71.60478436775534,
+   "kneeBack": 82.91513285939716,
+   "trunkInc": 25.30216243276626,
+   "trunkLat": 23.07753584424428,
+   "shTilt": -38.418390512785635,
+   "elbowHit": 128.3224986396673,
+   "elbowToss": 38.81274514195442,
+   "tossArmElev": 118.50626108096631,
+   "hitArmElev": 43.58285217173198,
+   "pelvisZ": 0.8645560659676703,
+   "headZ": 1.5289993393256474
+  },
+  "low": {
+   "elbowHit": 108.16273113156592,
+   "rackZ": 1.1934503263114844,
+   "shoulderZ": 1.5269729323298251,
+   "elbowZ": 1.468270374075753,
+   "shTilt": -3.881055645303843,
+   "trunkLat": 27.11500345697963,
+   "kneeFront": 17.226179501122154,
+   "kneeBack": 31.268006368660977,
+   "pelvisZ": 1.1360579825618484
+  },
+  "contact": {
+   "ballXYZ": [
+    -1.931,
+    -11.415,
+    2.559
+   ],
+   "headXYZ": [
+    -1.931,
+    -11.414,
+    2.559
+   ],
+   "contactZ": 2.559210171230817,
+   "contactZ_over_H": 1.421783428461565,
+   "ahead_of_baseline": 0.47003266943534605,
+   "elbowHit": 63.02974869138893,
+   "shElevTrunk": 153.84814494698102,
+   "armWorld": 30.838097761037044,
+   "shTilt": 44.87675236144341,
+   "trunkLat": 14.443478174911565,
+   "trunkInc": 47.28990437603865,
+   "vertReach": 0.8503988597873704,
+   "armLen": 0.5194799212816356,
+   "shoulderZ": 1.7353695212760964,
+   "wristZ": 2.1771346540164322,
+   "ballFromShoulder_xy": [
+    -0.293,
+    0.13
+   ],
+   "ballFromLeftHip_x": -0.2694923426344198,
+   "ballFromBodyMid_x": -0.3452858821647813,
+   "ballFromLeftToe_y": 0.4531632369061871,
+   "ankleL_z": 0.30787415154757153,
+   "ankleR_z": 0.40563616520685675,
+   "pelvisZ": 1.2990883137014806,
+   "pelvisRise": 0.4345322477338103,
+   "elbow2D_interior": 136.8300866622021
+  },
+  "toss": {
+   "apexFrame": 11.994901842676642,
+   "apexZ": 3.5511756996184674,
+   "apexXY": [
+    -1.669,
+    -11.747
+   ],
+   "apex_to_contact_ms": 375.3981566023598,
+   "dropToContact": 0.9919655283876505,
+   "apex_from_leftHip_x_at_trophy": -0.2211401083861655,
+   "apex_ahead_baseline": 0.1380084920123803,
+   "vz_at_contact": -0.9427247920779313
+  },
+  "ball": {
+   "speed_ms": 43.96337334928025,
+   "speed_kmh": 158.2681440574089,
+   "launch_down_deg": -5.430617112436033,
+   "launch_dir_deg_from_center": 14.299606794396443
+  },
+  "racket": {
+   "headSpeed_at_contact": 21.74735927613735,
+   "headSpeed_peak": 22.014205163179366,
+   "peak_frame": 23
+  },
+  "chain": {
+   "pelvSpeed": {
+    "frame": 18,
+    "ms_before_contact": 175.2282180249145,
+    "peak": 3.6859179191978058
+   },
+   "shSpeed": {
+    "frame": 19,
+    "ms_before_contact": 141.89488469158118,
+    "peak": 5.182817718271372
+   },
+   "elbowSpeed": {
+    "frame": 20,
+    "ms_before_contact": 108.56155135824785,
+    "peak": 10.463274560540745
+   },
+   "wristSpeed": {
+    "frame": 21,
+    "ms_before_contact": 75.22821802491451,
+    "peak": 9.2794574432659
+   },
+   "rackSpeed": {
+    "frame": 23,
+    "ms_before_contact": 8.561551358247854,
+    "peak": 22.014205163179366
+   },
+   "hipYawRate": {
+    "frame": 20,
+    "ms_before_contact": 108.56155135824785,
+    "peak": 1115.5174308767614
+   },
+   "shYawRate": {
+    "frame": 22,
+    "ms_before_contact": 41.89488469158119,
+    "peak": 599.491479208639
+   },
+   "elbowRate": {
+    "frame": 22,
+    "ms_before_contact": 41.89488469158119,
+    "peak": 580.3383867427381
+   }
+  },
+  "landing": {
+   "frame": 32,
+   "left_foot_y": -12.038381458814168,
+   "into_court": -0.15338145881416843,
+   "flight_ms": 300.0
+  }
+ },
+ "B": {
+  "frames": {
+   "trophy": 170,
+   "low": 181,
+   "contact": 183.79
+  },
+  "times_ms": {
+   "trophy_to_contact": 460,
+   "low_to_contact": 93
+  },
+  "trophy": {
+   "kneeFront": 79.54430529025852,
+   "kneeBack": 95.67069192272281,
+   "trunkInc": 20.96129618582452,
+   "trunkLat": 19.91049283734121,
+   "shTilt": -40.178029181249,
+   "elbowHit": 104.3990592471221,
+   "elbowToss": 83.84591986902035,
+   "tossArmElev": 124.4750611260009,
+   "hitArmElev": 28.64034150900651,
+   "pelvisZ": 0.8906092855481826,
+   "headZ": 1.5587101215039227
+  },
+  "low": {
+   "elbowHit": 120.03958133422798,
+   "rackZ": 1.1314967017836044,
+   "shoulderZ": 1.5558922926274916,
+   "elbowZ": 1.5667192164333046,
+   "shTilt": 8.333938185564055,
+   "trunkLat": 27.56922748655407,
+   "kneeFront": 36.347873051607884,
+   "kneeBack": 19.073497903712898,
+   "pelvisZ": 1.1481090141794152
+  },
+  "contact": {
+   "ballXYZ": [
+    -1.993,
+    -11.762,
+    2.517
+   ],
+   "headXYZ": [
+    -1.993,
+    -11.761,
+    2.518
+   ],
+   "contactZ": 2.5173585500976454,
+   "contactZ_over_H": 1.3985325278320253,
+   "ahead_of_baseline": 0.12340640477045994,
+   "elbowHit": 70.99078242600409,
+   "shElevTrunk": 141.29838088059174,
+   "armWorld": 28.28482627814461,
+   "shTilt": 45.31869544694274,
+   "trunkLat": 17.39114326611844,
+   "trunkInc": 47.12601410044409,
+   "vertReach": 0.8351355173184526,
+   "armLen": 0.4963980989151633,
+   "shoulderZ": 1.707667233275211,
+   "wristZ": 2.1222269164086223,
+   "ballFromShoulder_xy": [
+    -0.359,
+    -0.097
+   ],
+   "ballFromLeftHip_x": -0.3676663784836971,
+   "ballFromBodyMid_x": -0.4264462360002246,
+   "ballFromLeftToe_y": 0.04787111998900073,
+   "ankleL_z": 0.2834999700362234,
+   "ankleR_z": 0.41379208414930374,
+   "pelvisZ": 1.2758973011830033,
+   "pelvisRise": 0.3852880156348206,
+   "elbow2D_interior": 157.3170826772283
+  },
+  "toss": {
+   "apexFrame": 172.00341314012917,
+   "apexZ": 3.6788456612853007,
+   "apexXY": [
+    -1.717,
+    -11.623
+   ],
+   "apex_to_contact_ms": 392.8322215238306,
+   "dropToContact": 1.1614871111876552,
+   "apex_from_leftHip_x_at_trophy": -0.28034470994439564,
+   "apex_ahead_baseline": 0.2622746699454055,
+   "vz_at_contact": -2.1386142375710238
+  },
+  "ball": {
+   "speed_ms": 38.87700070130688,
+   "speed_kmh": 139.9572025247048,
+   "launch_down_deg": -4.0180684806962805,
+   "launch_dir_deg_from_center": 7.276972032931598
+  },
+  "racket": {
+   "headSpeed_at_contact": 20.82256150741863,
+   "headSpeed_peak": 21.36056580355124,
+   "peak_frame": 184
+  },
+  "chain": {
+   "pelvSpeed": {
+    "frame": 179,
+    "ms_before_contact": 159.6126595281362,
+    "peak": 2.793794149745377
+   },
+   "shSpeed": {
+    "frame": 173,
+    "ms_before_contact": 359.6126595281362,
+    "peak": 4.863893305301017
+   },
+   "elbowSpeed": {
+    "frame": 180,
+    "ms_before_contact": 126.27932619480286,
+    "peak": 7.792165758016118
+   },
+   "wristSpeed": {
+    "frame": 188,
+    "ms_before_contact": -140.3873404718638,
+    "peak": 8.204311969771911
+   },
+   "rackSpeed": {
+    "frame": 184,
+    "ms_before_contact": -7.0540071385304755,
+    "peak": 21.36056580355124
+   },
+   "hipYawRate": {
+    "frame": 182,
+    "ms_before_contact": 59.61265952813619,
+    "peak": 692.7124677795342
+   },
+   "shYawRate": {
+    "frame": 172,
+    "ms_before_contact": 392.9459928614695,
+    "peak": 1120.3740173962901
+   },
+   "elbowRate": {
+    "frame": 182,
+    "ms_before_contact": 59.61265952813619,
+    "peak": 559.2972132846369
+   }
+  },
+  "landing": {
+   "frame": 193,
+   "left_foot_y": -12.181582195980797,
+   "into_court": -0.2965821959807968,
+   "flight_ms": 333.3333333333333
+  }
+ }
+}

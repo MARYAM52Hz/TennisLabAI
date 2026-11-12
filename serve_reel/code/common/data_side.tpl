@@ -1,0 +1,30 @@
+# IMG_7122 single serve (side view): measured numbers (reconstruction from CVAT labels, scale from the player) and literature benchmarks. Times are in unique-frame units (1/30 s).
+TC={'A':@@TC@@}
+EV={'A':dict(trophy=@@TROPHY@@,low=@@LOW@@,contact=@@TC@@,landing=@@LANDING@@)}
+STAGES=[('شروع','Start'),('رهاسازی توپ','Release'),('بارگذاری پا','Loading'),('افت راکت','Cocking'),('شتاب‌گیری','Acceleration'),('لحظه‌ی تماس','Contact'),('کاهش سرعت','Deceleration'),('پایان حرکت','Finish')]
+def stage_of(s,tau):
+    e=EV['A']
+    if tau<@@ST0@@: return 0
+    if tau<@@ST1@@: return 1
+    if tau<e['trophy']: return 2
+    if tau<e['low']: return 3
+    if tau<e['contact']-0.45: return 4
+    if tau<=e['contact']+0.45: return 5
+    if tau<e['landing']: return 6
+    return 7
+MET={
+ 'knee_front':dict(label='خمش زانوی جلو',unit='°',A=@@knee_front@@,B=@@knee_front@@,mean=64.5,sd=9.7,lo=20,hi=120,ref='۶۴٫۵ ± ۹٫۷°',src='F24'),
+ 'knee_back':dict(label='خمش زانوی عقب',unit='°',A=@@knee_back@@,B=@@knee_back@@,mean=67.4,sd=16.4,lo=20,hi=120,ref='۶۷٫۴ ± ۱۶٫۴°',src='F24'),
+ 'trunk':dict(label='شیب تنه در تروفی',unit='°',A=@@trunk@@,B=@@trunk@@,mean=25.0,sd=7.1,lo=0,hi=50,ref='۲۵ ± ۷٫۱°',src='F24'),
+ 'elbow_low':dict(label='خمش آرنج در پایین‌ترین نقطه‌ی راکت',unit='°',A=@@elbow_low@@,B=@@elbow_low@@,mean=104,sd=17,lo=60,hi=150,ref='≈ ۱۰۴° (المپیک سیدنی)',src='FL03'),
+ 'elbow_ct':dict(label='خمش آرنج هنگام تماس',unit='°',A=@@elbow_ct@@,B=@@elbow_ct@@,mean=30.1,sd=15.9,lo=0,hi=90,ref='۳۰٫۱ ± ۱۵٫۹°',src='F24'),
+ 'height':dict(label='ارتفاع نقطه‌ی تماس',unit=' m',A=@@height@@,B=@@height@@,mean=3.0,sd=0.12,lo=2.2,hi=3.3,ref='نخبگان ≈ ۳٫۰ m',src='TT'),
+}
+X={'A':dict(t_tc=@@T_TC@@,t_low=@@T_LOW@@,ahead=@@AHEAD@@,landing=@@LAND@@,rise=0,toss_apex=@@APEX@@,lean=@@LEAN@@,chain='پا → تنه → آرنج → راکت')}
+def status(m,v):
+    M=MET[m]
+    if M['sd'] is None: return 'low' if v<M['mean']*0.9 else 'ok'
+    z=(v-M['mean'])/M['sd']
+    if abs(z)<=1.0: return 'ok'
+    return 'high' if z>0 else 'low'
+SRC={}
