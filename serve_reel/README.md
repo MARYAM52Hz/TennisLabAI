@@ -13,7 +13,7 @@ Module of **TennisLabAI**. Turns a phone video of a tennis serve plus hand label
 | `serve_reel/archive_code/` | code of the three earlier project eras, for reproduction (no data) |
 | `serve_reel/tools/restore_workspace.py` | rebuilds the old flat workspace from the archive (see `docs/serve_reel/RESTORE.md`) |
 | `docs/serve_reel/` | PIPELINE, DATA_FORMATS, STANDARDS_AND_DECISIONS, HISTORY_AND_INVENTORY, EXTENDING, RESTORE, INPUT_STANDARDS |
-| `serve_reel/assets/` | **Blender assets are not in this public repo** (see `assets/README_ASSETS.md`) |
+| `serve_reel/assets/` | Blender stadium / ball / racket with their licences (stadium is CC BY 3.0: credit required; see `assets/README_ASSETS.md`) |
 
 > Path note: the docs in `docs/serve_reel/` were written for the stand-alone repository where `kit/` = this `serve_reel/` and `archive/` = `serve_reel/archive_code/`.
 

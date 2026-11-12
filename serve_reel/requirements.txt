@@ -1,0 +1,12 @@
+# Main environment (./venv) - installed by setup.sh
+bpy==5.2.3
+numpy
+scipy
+jax[cpu]
+opencv-python-headless
+pillow            # needs libraqm for Persian text: apt install libraqm0 / brew install libraqm
+# Pose environment (./mpenv, Python 3.12 only) - installed by setup.sh
+#   mediapipe==0.10.14
+#   numpy==1.26.4
+#   opencv-python-headless
+# System: ffmpeg, ffprobe

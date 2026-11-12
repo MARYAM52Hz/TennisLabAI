@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# serve_reel run artefacts and environments
+serve_reel/work/
+serve_reel/output/
+serve_reel/venv/
+serve_reel/mpenv/
+serve_reel/**/__pycache__/

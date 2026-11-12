@@ -9,4 +9,4 @@ Read in this order:
 6. `HISTORY_AND_INVENTORY.md` - how the project evolved (three eras) and what was delivered.
 7. `RESTORE.md` - rebuilding the old flat workspace from `serve_reel/archive_code/`.
 
-Path note: these documents were written for the stand-alone repository: there `kit/` = `serve_reel/` here, `archive/` = `serve_reel/archive_code/`, and `docs/` = `docs/serve_reel/`. Blender assets are not included in this repository (`serve_reel/assets/README_ASSETS.md`).
+Path note: these documents were written for the stand-alone repository: there `kit/` = `serve_reel/` here, `archive/` = `serve_reel/archive_code/`, and `docs/` = `docs/serve_reel/`. Blender assets and their licences are in `serve_reel/assets/` (`README_ASSETS.md`).

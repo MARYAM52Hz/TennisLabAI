@@ -1,5 +1,5 @@
 # Third-party material
-* **Blender assets** in `kit/assets/` (tennis stadium, tennis ball, tennis racket): from Blendswap; each folder contains its licence file. Check the licence terms (attribution / non-commercial) before publishing or monetising reels; remove or replace the assets if you cannot comply.
-* **Vazirmatn** font (`kit/fonts/`): SIL Open Font License 1.1 (`OFL.txt`).
+* **Blender assets** in `assets/`: Tennis Stadium by MrChimp2313 (CC BY 3.0 - credit required), tennis ball by Jeremiah R (Public Domain Mark), Tennis Raquet by JamieGrant (CC0); all from Blendswap, licence files are next to each asset (see `assets/README_ASSETS.md`).
+* **Vazirmatn** font (`fonts/`): SIL Open Font License 1.1 (`OFL.txt`).
 * **Libraries** (not vendored): Blender `bpy`, MediaPipe, JAX, SciPy, NumPy, OpenCV, Pillow/libraqm, ffmpeg — see their licences.
-* **Not in this repository** (private data): source videos, full CVAT exports (the two example label files are included with user names removed), delivered reels, the human base mesh and other uploaded assets.
+* **Not in this repository** (private data): source videos, full CVAT exports (the two example label files in `examples/` are included, user names removed), delivered reels, the human base mesh and other uploaded assets.
