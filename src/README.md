@@ -13,3 +13,5 @@ Modules will include:
 - Visualization
 
 All production source code should be placed here.
+
+Note: the serve-reel pipeline lives in the top-level `serve_reel/` directory (self-contained, with its own `reel.py`); it can be moved under `src/` once the project layout is finalised.

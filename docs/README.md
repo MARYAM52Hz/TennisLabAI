@@ -15,5 +15,6 @@ It documents the scientific design, technical decisions, experimental protocols,
 - dataset.md — Dataset documentation
 - glossary.md — Technical terminology
 - references.md — Bibliography and external resources
+- serve_reel/ — Documentation of the serve-reel module (pipeline, data formats, input/label standards, calibration, reliability system, decisions, extension recipes, restore)
 
 The documentation evolves together with the project.

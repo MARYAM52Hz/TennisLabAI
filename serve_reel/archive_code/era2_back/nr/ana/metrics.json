@@ -1,0 +1,67 @@
+{
+ "events": {
+  "trophy": 66,
+  "low": 71,
+  "contact": 74.87,
+  "landing": 79
+ },
+ "times_ms": {
+  "trophy_to_contact": 429,
+  "low_to_contact": 196
+ },
+ "trophy": {
+  "kneeFront": 55.43815780847764,
+  "kneeBack": 71.98051817273128,
+  "trunkInc": 7.328086152399084,
+  "shTilt": -34.18123763271349
+ },
+ "low": {
+  "elbow2D": 84.436200796516,
+  "elbow3D": 75.662007767895,
+  "rackZ": 1.835299997828471
+ },
+ "contact": {
+  "ballXYZ": [
+   1.16,
+   -11.976,
+   2.742
+  ],
+  "height": 2.7418607884415342,
+  "ahead": -0.09117650459466908,
+  "elbow2D": 11.150133918825645,
+  "shTilt": 42.85178488294456,
+  "trunkInc": 35.49846824297099,
+  "ball_minus_neck_x": 0.06076691993931305,
+  "pelvisZ": 1.3485758772943746
+ },
+ "toss": {
+  "apexFrame": 68.00713530842398,
+  "apexZ": 3.4715116211735007,
+  "apex_minus_neck_x": 0.16811511285675507,
+  "apex_to_contact_ms": 328.7141274295391,
+  "apex_ahead_baseline": 0.09549420671525688
+ },
+ "ball": {
+  "speed_ms": 33.23928123768229,
+  "speed_kmh": 119.66141245565625,
+  "launch_deg": -4.5460647522449005,
+  "lateral_deg": -3.2165137568929616,
+  "net_clear": 0.3990105731721004,
+  "bounce_xy": [
+   0.26,
+   5.1
+  ],
+  "bounce_frame": 87.0
+ },
+ "racket_2d": {
+  "face_ratio_contact": 0.6840042750267189,
+  "head_dy_px_per_frame": -120.77000000000004,
+  "head_dx_px_per_frame": -6.009999999999991
+ },
+ "landing": {
+  "frame": 79,
+  "left_foot_y": -11.69595836201703,
+  "into_court": 0.18904163798296914
+ },
+ "foot_at_toss_y": -0.29328477547258736
+}

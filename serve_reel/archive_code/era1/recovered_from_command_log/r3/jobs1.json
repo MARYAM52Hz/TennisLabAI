@@ -1,0 +1,5 @@
+[{"name":"cp1_toss","frame":59,"az":50,"el":6,"dist":5.2,"tgt":[0,0,0.7]},
+ {"name":"cp2_trophy","frame":67,"az":90,"el":6,"dist":5.2,"tgt":[0,0,0.7]},
+ {"name":"cp3_drop","frame":71,"az":140,"el":8,"dist":5.2,"tgt":[0,0,0.8]},
+ {"name":"cp4_contact","frame":74,"az":150,"el":5,"dist":6.0,"tgt":[0,0,1.0]},
+ {"name":"cp5_finish","frame":80,"az":30,"el":8,"dist":5.2,"tgt":[0,0,0.6]}]

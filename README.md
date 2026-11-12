@@ -144,3 +144,16 @@ Long-Term Goal
 
 Develop an open scientific platform for multimodal biomechanics that supports reproducible research and can be extended beyond tennis to general human movement analysis.
 
+
+Serve Reel Module (serve_reel/)
+
+A working, tested one-command pipeline that turns a single phone video of a tennis serve plus CVAT labels into an analysis reel (3D reconstruction, joint-angle scorecard against the literature, posture charts, serve-type check) with an explicit reliability grade (A-D) for every reported number.
+
+Highlights
+
+Two camera setups: behind the baseline (scale from court points) and at the side (scale from player height)
+Single-camera 3D lift with constant bone lengths, ballistic ball fit (gravity as an independent scale check)
+Optional posture charts (--charts) and a reliability/QC system (qc.json, qc.md)
+Specification of video standards, label properties, scale calibration with and without labels, and handling of human labelling error
+
+Start here: serve_reel/README.md. Standards and calibration: docs/serve_reel/INPUT_STANDARDS_AND_CALIBRATION.md. Pipeline, data formats, decisions, extension recipes: docs/serve_reel/.
