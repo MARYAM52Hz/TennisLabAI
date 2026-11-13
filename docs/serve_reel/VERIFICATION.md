@@ -35,7 +35,7 @@ EN 25.6 MiB, FA 14.4 MiB, 106.6 s, handle on every sampled frame, "Reliability: 
 |---|---|---|---|
 | back | `add` | both | long shot + posture timeline, 106.6 s, EN 25.6 MiB |
 | back | `replace` | timeline | no long shot, posture timeline only, 95.6 s, EN 23.6 MiB, FA 10.4 MiB |
-| side | `off` | none | see section 6 |
+| side | `off` | none | no posture-timeline slide, 77.3 s, EN 21.1 MiB, FA 8.6 MiB (default side reel: 88.3 s, 22.7 MiB); handle on every sampled frame |
 Changing `--charts` after a build shifts the segment indices: delete `nr|nq/fin_en` and `fin_fa` before re-running `--from build`.
 
 ## 4. Left-handed players (mirrored inputs)
