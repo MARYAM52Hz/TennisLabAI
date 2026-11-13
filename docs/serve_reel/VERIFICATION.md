@@ -56,4 +56,31 @@ Variants made with `tools/make_variant_inputs.py`: 1.5x upscale (1080 x 1920) an
 * Back view, 1.5x: grade A 87.4, same calibration (f = 657 px = 0.513 x image height) and the same metrics.
 * Bugs found and fixed: (a) the side-view motion detector read the source video with the scaled size, giving garbage (contact height -50 m, grade B); it now uses `W_src/H_src`. (b) An implausible contact height was not a critical failure; `C_contact_h` is now critical outside 1.05-2.05 x the 1.55 reference. (c) The first rotation variant was built with the wrong transpose, so the test input was wrong, not the pipeline.
 * New safeguards: the side-view focal prior is `0.515 x max(W, H)`; landscape footage triggers a warning and the `V_orient` QC check (score 50).
-* **Still untested:** real footage from other phones/lenses (ultra-wide, telephoto, 0.5x), landscape footage and portrait video that is not 9:16. The focal length of the back view is fitted from the court lines, so it adapts; the side view relies on the prior, so a different lens needs `--height` plus a check of the C_focal line in `qc.md`.
+
+## 6. Aspect ratio, landscape and lens (synthetic variants)
+`tools/make_variant_inputs.py canvas` scales the picture and centres it on another canvas (labels follow): landscape 1280 x 720, portrait 4:5 (1080 x 1350), wide lens (picture x 0.7, black border) and tele/zoom (x 1.25, cropped). Analysis and QC were run on every variant for both views; numbers below are the values printed in the reel.
+
+Side view (original / landscape / 4:5 / wide 0.7 / tele 1.25):
+| | original | landscape | 4:5 | wide | tele |
+|---|---|---|---|---|---|
+| front knee, back knee, trunk (deg) | 69 / 36 / 11 | 76 / **99** / 16 | 69 / 37 / 13 | 71 / 38 / 17 | 64 / 30 / 13 |
+| contact height (m) | 2.77 | 2.77 | 2.77 | 2.77 | 2.77 |
+| grade | A 94 | A 92 | A 95 | A 93 | A 96 |
+| trust of knees/trunk | high | **low** | high | high | high |
+
+Back view (original / landscape / 4:5 / wide / tele):
+| | original | landscape | 4:5 | wide | tele |
+|---|---|---|---|---|---|
+| front knee, back knee, trunk (deg) | 55 / 69 / 17 | 59 / 76 / 2 | 55 / 72 / 8 | 60 / 76 / 2 | 56 / 69 / 17 |
+| contact height (m), speed (km/h) | 2.77, 120 | 2.84, 122 | 2.77, 120 | 2.84, 121 | 2.76, 120 |
+| grade | A 87 | B 78 | A 87 | B 75 | A 86 |
+| trust of knees/trunk | high | low | high | low | high |
+
+Findings
+* 4:5 portrait and tele (zoom 1.25) reproduce the original within about 6 deg (back-view trunk differs by up to 9 deg in the 4:5 variant, which is why the trunk is never given more than medium-high trust from behind).
+* Side view, landscape: the player is only about 210 px tall, and the pose model gave a back-knee angle of 99 deg instead of 36 deg. **The first QC version still rated this A with high trust** (the size check used a fraction of the frame height, which is unchanged when the picture is just letterboxed). Fixed: `V_size` now uses the long side of the frame, and a player below about 17 % of the long side lowers the trust of knees and trunk to low. After the fix: knees/trunk low, grade A 92 only because the labels and scale are fine.
+* Back view, landscape and wide: calibration degrades (court-line fit, focal length 6.7 score on the wide variant), contact height becomes 2.84 m, grade B and the trust of knees, trunk, height, toss and speed becomes low. The reliability report catches these without any change.
+* A full draft render from the landscape side clip completed (88.3 s, EN 22.6 MiB, FA 8.9 MiB): the reel is portrait 928 x 1696 as always, @tennismad.ai on every sampled frame. The reel prints the 99 deg value as-is, so `reel.py` now prints a console WARNING listing low-trust numbers after the QC stage ("read qc.md before publishing").
+* Wide side view (0.7): errors up to 6 deg (trunk 17 vs 11), trust medium-high; the focal prior (0.515 x long side) is wrong for such a lens, yet contact height stays 2.77 m.
+
+**Still untested:** footage that really comes from other phones/lenses (ultra-wide, telephoto, 0.5x) and real left-handed footage. Synthetic variants reproduce the geometry but not lens distortion or different video encoders.

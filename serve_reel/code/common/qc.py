@@ -48,9 +48,9 @@ chk('V_fps', 'video', lin(fps, 10, 30), round(fps, 1), 'Real motion sampling %.0
 if pts is None: chk('V_pts', 'video', 30, None, 'No per-frame timestamps found: timing falls back to a constant frame rate.', 'زمان‌بندی فریم‌ها پیدا نشد؛ نرخ ثابت فرض شد.', 0.5, False)
 try:
     sk = L['skel']; tcf = int(round(JC['tc0'] if VIEW == 'back' else JC['tc0']))
-    ys = [sk[n][tcf][1] for n in ('left_ankle', 'right_ankle')]; ext = (max(ys) - sk['top_spine'][tcf][1]) / H_IMG
-    chk('V_size', 'video', lin(ext, 0.12, 0.30), round(float(ext), 3), 'Player (neck to ankles) fills %.0f%% of frame height at contact.' % (ext * 100),
-        'بازیکن (گردن تا مچ پا) هنگام تماس %s٪ ارتفاع تصویر را پر می‌کند.' % round(ext * 100), 0.7,
+    ys = [sk[n][tcf][1] for n in ('left_ankle', 'right_ankle')]; ext = (max(ys) - sk['top_spine'][tcf][1]) / max(W_IMG, H_IMG)   # fraction of the LONG side (= frame height for portrait): landscape footage has fewer pixels on the player
+    chk('V_size', 'video', lin(ext, 0.12, 0.30), round(float(ext), 3), 'Player (neck to ankles) fills %.0f%% of the long side of the frame at contact (%d px).' % (ext * 100, round(ext * 1280)),
+        'بازیکن (گردن تا مچ پا) هنگام تماس %s٪ ضلع بلند تصویر را پر می‌کند.' % round(ext * 100), 0.7,
         action_en='Move the camera closer or zoom so the player is at least ~30% of the frame height.', action_fa='دوربین را نزدیک‌تر کنید تا بازیکن حدود ۳۰٪ ارتفاع کادر یا بیشتر باشد.')
 except Exception: pass
 
@@ -218,6 +218,8 @@ MT = {
  'timing': (['V_fps', 'L_contact'], 1.0), 'toss': (['L_ball', 'C_ball', 'C_height'] + (['C_court_err', 'C_court_stab'] if back else []), 0.85 if back else 1.0)}
 if back: MT.update(speed=(['L_ball', 'L_contact', 'C_ball', 'C_court_err', 'C_court_n', 'C_court_spread', 'C_court_stab', 'V_fps'], 1.0), tilt=(['L_skel', 'L_spikes', 'C_anchor'], 0.8))
 metric = {}
+if byid.get('V_size', 100) < 30:      # a very small player (<~17% of the long side, about 220 px) makes every pose angle unreliable even when the labels look fine
+    for k in ('knee_front', 'knee_back', 'trunk'): MT[k][0].append('V_size')
 for k, (ids, cap) in MT.items():
     s = dep(ids, cap)
     if s is not None: metric[k] = dict(score=s, level='high' if s >= 80 else 'medium' if s >= 60 else 'low')

@@ -103,7 +103,13 @@ def make(a):
     def metrics(): run(job, [os.path.join(d, 'ana', 'metrics.py')], 'metrics.log'); run(job, [os.path.join(d, 'ana', 'gen_data.py')], 'metrics.log')
     S('metrics', metrics)
     def qc(): shutil.copy(os.path.join(KIT, 'code', 'common', 'qc.py'), os.path.join(job, 'qc.py')); run(job, [os.path.join(job, 'qc.py')], 'qc.log'); print(open(os.path.join(job, 'logs', 'qc.log')).read().split('$')[-1].split('\n', 1)[-1].rstrip())
+    def qc_warn():
+        try: q = json.load(open(os.path.join(job, 'qc.json')))
+        except Exception: return
+        low = [k for k, v in q.get('metrics', {}).items() if v['level'] == 'low']
+        if low: print('   WARNING: low trust for %s (grade %s). These numbers are printed in the reel as-is: read %s/qc.md before publishing, or fix the first item under "What to fix first".' % (', '.join(low), q['grade'], job))
     S('qc', qc)
+    qc_warn()
     S('plan', lambda: run(job, [os.path.join(d, 'plan_all.py')], 'plan.log'))
     S('render', lambda: render(job, view, samples, 'render.log'))
     def build():

@@ -3,6 +3,7 @@
   python3 tools/make_variant_inputs.py mirror  VIDEO LABELS.xml OUTDIR     # a left-hander: video and labels mirrored, left/right names swapped
   python3 tools/make_variant_inputs.py scale   VIDEO LABELS.xml OUTDIR 1.5 # another phone resolution: video and labels scaled
   python3 tools/make_variant_inputs.py rotate  VIDEO LABELS.xml OUTDIR     # landscape clip stored sideways (rotation metadata 90) with labels in the displayed (portrait) frame -> same labels, tests rotation handling
+  python3 tools/make_variant_inputs.py canvas  VIDEO LABELS.xml OUTDIR CW CH S  # other aspect ratio / lens: the picture is scaled by S (S<1 = wider lens, S>1 = zoom/tele) and centred on a CW x CH canvas (padded with black or cropped); labels follow
 Writes OUTDIR/video.mp4 and OUTDIR/labels.xml.
 """
 import sys, os, re, subprocess, json
@@ -16,18 +17,18 @@ def probe(v):
 
 def swap_lr(n): return re.sub(r'left|right', lambda m: 'right' if m.group(0) == 'left' else 'left', n)
 
-def fix_xml(src, dst, fx, fy, mirror, W):
+def fix_xml(src, dst, fx, fy, mirror, W, ox=0.0, oy=0.0):
     t = ET.parse(src); r = t.getroot()
     def tf(s):
         v = [float(a) for a in s.split(',')]; out = []
-        for i in range(0, len(v), 2): out += [(W - v[i] * fx) if mirror else v[i] * fx, v[i + 1] * fy]
+        for i in range(0, len(v), 2): out += [((W - v[i] * fx) if mirror else v[i] * fx) + ox, v[i + 1] * fy + oy]
         return ','.join('%.2f' % a for a in out)
     for e in r.iter():
         if e.tag == 'points' and e.get('points'):
             e.set('points', tf(e.get('points')))
             if mirror and e.get('label'): e.set('label', swap_lr(e.get('label')))
         if e.tag == 'ellipse':
-            cx = float(e.get('cx')) * fx; e.set('cx', '%.2f' % ((W - cx) if mirror else cx)); e.set('cy', '%.2f' % (float(e.get('cy')) * fy))
+            cx = float(e.get('cx')) * fx; e.set('cx', '%.2f' % (((W - cx) if mirror else cx) + ox)); e.set('cy', '%.2f' % (float(e.get('cy')) * fy + oy))
             e.set('rx', '%.2f' % (float(e.get('rx')) * fx)); e.set('ry', '%.2f' % (float(e.get('ry')) * fy))
             if mirror and e.get('rotation'): e.set('rotation', '%.2f' % ((-float(e.get('rotation'))) % 360.0))
     t.write(dst)
@@ -47,4 +48,13 @@ elif mode == 'rotate':
     subprocess.check_call(['ffmpeg', '-y', '-v', 'error', '-i', video, '-vf', 'transpose=1', '-c:v', 'libx264', '-crf', '14', '-preset', 'fast', '-pix_fmt', 'yuv420p', '-vsync', 'passthrough', '-an', '-metadata:s:v:0', 'rotate=90', tmp])
     subprocess.check_call(['ffmpeg', '-y', '-v', 'error', '-display_rotation:v:0', '90', '-i', tmp, '-c', 'copy', dst])
     fix_xml(xml, os.path.join(out, 'labels.xml'), 1, 1, False, W); os.remove(tmp)
+elif mode == 'canvas':
+    CW, CH, S = int(sys.argv[5]), int(sys.argv[6]), float(sys.argv[7])
+    sw, sh = int(round(W * S / 2) * 2), int(round(H * S / 2) * 2)
+    ox, oy = (CW - sw) / 2.0, (CH - sh) / 2.0
+    # per axis: pad when the scaled picture is smaller than the canvas, crop when larger
+    fx_ = 'pad=%d:ih:%d:0' % (CW, int(ox)) if ox >= 0 else 'crop=%d:ih:%d:0' % (CW, int(-ox))
+    fy_ = 'pad=iw:%d:0:%d' % (CH, int(oy)) if oy >= 0 else 'crop=iw:%d:0:%d' % (CH, int(-oy))
+    subprocess.check_call(['ffmpeg', '-y', '-v', 'error', '-i', video, '-vf', 'scale=%d:%d:flags=lanczos,%s,%s' % (sw, sh, fx_, fy_), '-c:v', 'libx264', '-crf', '14', '-preset', 'fast', '-pix_fmt', 'yuv420p', '-vsync', 'passthrough', '-an', dst])
+    fix_xml(xml, os.path.join(out, 'labels.xml'), sw / W, sh / H, False, CW, int(ox), int(oy))
 print('wrote', dst, probe(dst))
