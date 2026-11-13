@@ -10,7 +10,7 @@ The kit does the whole job: frames and timestamps, label checks, camera, 3D pose
 1. The serve video (.MOV/.mp4) and the CVAT export ("CVAT for video 1.1", zip or annotations.xml).
 2. View: `back` (camera behind the baseline, court points labelled on frame 0) or `side` (camera beside the player; no court needed). If unsure, look at one frame.
 3. The player's real height in metres (`--height`; the scale in the side view, an independent cross-check in the back view; without it 1.80 m is assumed and the reliability grade is capped).
-4. Optional: `--charts auto|off|add|replace` (posture-timeline charts; default on for side; back: `add` or `replace`) and `--qc-badge` (print the reliability grade on the sources slide).
+4. Optional: `--charts auto|off|add|replace` (posture-timeline charts; default on for side; back: `add` or `replace`) `--qc-badge` (print the reliability grade on the sources slide) and `--hand auto|right|left` (left-handers are auto-detected and mirrored).
 4. The Instagram handle if it is not @tennismad.ai.
 
 ## Run

@@ -52,13 +52,40 @@ def cadence(fd):
     r = best[1]; r = round(r * 3) / 3
     return 1.0 if r < 1.2 else r
 
-def extract_frames(video, frames, outdir, start_number):
+def extract_frames(video, frames, outdir, start_number, mirror=False, size=None):
     """frames: container frame numbers (0-based) -> outdir/f%04d.png ; naming: back view f(n+1) (1-based), side view f(n) (0-based)"""
     os.makedirs(outdir, exist_ok=True)
     if len(frames) > 60 and frames == list(range(len(frames))):
-        sh(['ffmpeg', '-y', '-v', 'error', '-i', video, '-vsync', '0', '-start_number', str(start_number), os.path.join(outdir, 'f%04d.png')]); return
+        sh(['ffmpeg', '-y', '-v', 'error', '-i', video] + (['-vf', ','.join((['hflip'] if mirror else []) + (['scale=%d:%d:flags=lanczos' % size] if size else []))] if (mirror or size) else []) + ['-vsync', '0', '-start_number', str(start_number), os.path.join(outdir, 'f%04d.png')]); return
     for n in frames:
-        sh(['ffmpeg', '-y', '-v', 'error', '-i', video, '-vf', 'select=eq(n\\,%d)' % n, '-vsync', '0', '-frames:v', '1', os.path.join(outdir, 'f%04d.png' % (n + start_number - 0))])
+        sh(['ffmpeg', '-y', '-v', 'error', '-i', video, '-vf', 'select=eq(n\\,%d)%s%s' % (n, ',hflip' if mirror else '', (',scale=%d:%d:flags=lanczos' % size) if size else ''), '-vsync', '0', '-frames:v', '1', os.path.join(outdir, 'f%04d.png' % (n + start_number - 0))])
+
+
+def swap_lr(n):
+    """left/right swap of a label name (left_knee <-> right_knee, far_baseline_singles_left <-> ..._right)"""
+    return re.sub(r'left|right', lambda m: 'right' if m.group(0) == 'left' else 'left', n)
+
+def detect_hand(lab, tc_c):
+    """racket hand = the wrist nearer to the racket handle at the contact frame -> 'right' or 'left' (left-handers are mirrored so that the whole pipeline sees a right-hander)"""
+    try:
+        h = np.asarray(lab['rack']['handle_top'][tc_c], float) if 'handle_top' in lab['rack'] else np.asarray(lab['rack']['butt_cap'][tc_c], float)
+        dr = np.linalg.norm(np.asarray(lab['skel']['right_wrist'][tc_c], float) - h); dl = np.linalg.norm(np.asarray(lab['skel']['left_wrist'][tc_c], float) - h)
+        return ('left' if dl < dr else 'right'), float(dr), float(dl)
+    except Exception: return 'right', 0.0, 0.0
+
+def transform_labels(lab, W, k=1.0, mirror=False):
+    """canonical coordinates: scale every label by k (long side -> 1280 px) and optionally mirror horizontally (x -> W - x, left/right names swapped, ellipse rotation negated)"""
+    X = (lambda x: (W - x) * k) if mirror else (lambda x: x * k); nm = swap_lr if mirror else (lambda n: n)
+    def arr(a):
+        a = np.asarray(a, float); z = (a == 0).all(axis=1, keepdims=True); o = np.c_[X(a[:, 0]), a[:, 1] * k]; return np.where(z, 0.0, o)
+    out = dict(lab)
+    out['skel'] = {nm(n): arr(a) for n, a in lab['skel'].items()}
+    out['rack'] = {n: arr(a) for n, a in lab['rack'].items()}
+    out['court'] = {nm(n): np.array([X(v[0]), v[1] * k]) for n, v in lab['court'].items()}
+    out['ball'] = {f: (X(b[0]), b[1] * k, b[2] * k, b[3] * k) + tuple(b[4:]) for f, b in lab['ball'].items()}
+    out['face'] = {f: (X(e[0]), e[1] * k, e[2] * k, e[3] * k, ((-e[4]) % 360.0) if mirror else e[4]) for f, e in lab['face'].items()}
+    out['contacts'] = [(l, f, [X(p[0]), p[1] * k] + list(p[2:])) for l, f, p in lab['contacts']]
+    return out
 
 def release_detect(sk_lw, ball, tc0, view):
     """first frame at which the ball leaves the tossing hand (distance ball-left wrist rises above the hold level)"""
@@ -95,7 +122,7 @@ def validate(view, lab, frames, ball_frames, tc_c):
         if mc: err.append('court points missing at frame 0: %s' % mc)
     if err: sys.exit('LABEL PROBLEMS (fix in CVAT, re-export, re-run):\n  - ' + '\n  - '.join(err))
 
-def prepare(job, video, labels, view, name, height=1.80, overrides=None):
+def prepare(job, video, labels, view, name, height=1.80, overrides=None, hand='auto', mirror_probe=None):
     os.makedirs(job, exist_ok=True); kit = os.environ['REEL_KIT']; py = sys.executable
     xml, T_lab = read_xml(labels, job)
     W, H, pts = probe(video); nvid = len(pts)
@@ -107,9 +134,21 @@ def prepare(job, video, labels, view, name, height=1.80, overrides=None):
     ctc = [c for c in lab['contacts'] if c[0] == 'B_contact_racket']
     if len(ctc) != 1: sys.exit('ERROR: need exactly one B_contact_racket point (the racket-ball contact frame); found %d' % len(ctc))
     tc_c = ctc[0][1]
+    hd, dr_, dl_ = detect_hand(lab, tc_c); mirror = (hand == 'left') or (hand == 'auto' and hd == 'left' and dl_ < 0.8 * dr_)
+    print('racket hand: %s (right wrist %.0f px / left wrist %.0f px from the handle at contact) -> %s' % (hd, dr_, dl_, 'MIRRORING video and labels so the pipeline sees a right-hander' if mirror else 'no mirroring'))
+    # canonical working resolution: long side 1280 px (all pixel thresholds of the pipeline were tuned there), so any phone / resolution behaves the same
+    k = 1280.0 / max(W, H); size = None
+    if abs(k - 1) > 0.01:
+        size = (int(round(W * k / 2) * 2), int(round(H * k / 2) * 2)); print('input %dx%d -> working resolution %dx%d (labels and frames scaled by %.3f)' % (W, H, size[0], size[1], k))
+    if W > H: print('WARNING: landscape footage is untested (the pipeline was developed on portrait phone video); results may be unreliable. See docs/serve_reel/INPUT_STANDARDS_AND_CALIBRATION.md')
+    if mirror or size:
+        lab = transform_labels(lab, W, k, mirror); pickle.dump(lab, open(jc['labels_pkl'], 'wb'))
+    jc.update(hand_detected=hd, mirrored=bool(mirror), W_src=W, H_src=H, scale_to_working=k, landscape=bool(W > H))
+    if size: jc.update(W=size[0], H=size[1]); W, H = size
+    json.dump(jc, open(os.path.join(job, 'job.json'), 'w'))
     if view == 'back':
         if not lab['court']: sys.exit('ERROR: back view needs the court track "C_structured_court" (frame 0) in the CVAT labels')
-        N = min(nvid, tc_c + 18); frames = list(range(N)); extract_frames(video, frames, os.path.join(job, 'new', 'fr'), 1)
+        N = min(nvid, tc_c + 18); frames = list(range(N)); extract_frames(video, frames, os.path.join(job, 'new', 'fr'), 1, mirror, size)
         np.save(os.path.join(job, 'nl', 'pts.npy'), pts[:max(nvid, T_lab)] if nvid >= T_lab else np.r_[pts, pts[-1] + (np.arange(1, T_lab - nvid + 1)) / 30.0])
         tc0 = tc_c; sk, ball = lab['skel'], lab['ball']
         gr = [c for c in lab['contacts'] if c[0] == 'B_contact_ground' and c[1] > tc0]
@@ -119,11 +158,11 @@ def prepare(job, video, labels, view, name, height=1.80, overrides=None):
         jc.update(N=N, tc0=tc_c, f0=rise, ball0=b0, bounce_f=bounce, ball1=(bounce + 2 if bounce else tc0 + 8), st0=rise - 2, st1=rise + 3, trophy_w0=rise - 2, trophy_w1=tc0 - 1,
                   focal=None, fps_real=int(round((nvid - 1) / pts[-1])), cadence=None)
     else:
-        fd = gray_diffs(video, W, H); r = cadence(fd); K_PRE, N = 32, 63
+        fd = gray_diffs(video, jc['W_src'], jc['H_src']); r = cadence(fd); K_PRE, N = 32, 63
         S0 = tc_c - int(np.floor(r * K_PRE)); S = np.array([S0 + int(np.floor(r * k)) for k in range(N)])
         if S0 < 0 or S[-1] >= nvid: sys.exit('ERROR: the clip is too short around the contact frame: need %d container frames before and %d after it' % (int(r * K_PRE), int(r * (N - 1 - K_PRE))))
         np.save(os.path.join(job, 'sw', 'S.npy'), S); np.save(os.path.join(job, 'sw', 'pts.npy'), np.arange(N) / 30.0)
-        extract_frames(video, [int(s) for s in S], os.path.join(job, 'sw', 'fr'), 0)
+        extract_frames(video, [int(s) for s in S], os.path.join(job, 'sw', 'fr'), 0, mirror, size)
         tc0 = K_PRE; assert S[tc0] == tc_c, (S[tc0], tc_c)
         sk = {n: v[S] for n, v in lab['skel'].items()}; ball = {k: lab['ball'][int(S[k])] for k in range(N) if int(S[k]) in lab['ball']}
         rise, b0, hold = release_detect(sk['left_wrist'], ball, tc0, view)
@@ -131,7 +170,7 @@ def prepare(job, video, labels, view, name, height=1.80, overrides=None):
         lab2 = dict(skel=sk, face={k: lab['face'][int(S[k])] for k in range(N) if int(S[k]) in lab['face']}, ball=ball, rack=lab['rack'], court=lab['court'])
         validate(view, lab2, list(range(N)), list(range(b0, tc0 + 2)), tc_c)
         jc.update(N=N, tc0=tc0, f0=f0, ball0=b0, bounce_f=None, ball1=tc0 + 1, st0=float(f0 - 3), st1=float(rise - 1), trophy_w0=f0 + 5, trophy_w1=tc0 - 5,
-                  focal=round(659.0 / 1280.0 * H, 1), fps_real=30, cadence=r, player_y=-12.4, container_tc=int(tc_c))
+                  focal=round(0.515 * max(W, H), 1), fps_real=30, cadence=r, player_y=-12.4, container_tc=int(tc_c))
     jc.update(overrides or {}); jc['window_note'] = 'auto-detected; edit job.json to override then re-run with --from <stage>'
     json.dump(jc, open(os.path.join(job, 'job.json'), 'w'), indent=1, default=lambda o: o.item() if hasattr(o, 'item') else str(o))
     print('job.json:', {k: v for k, v in jc.items() if k not in ('labels_xml', 'labels_pkl')}); return jc

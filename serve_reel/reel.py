@@ -77,7 +77,7 @@ def make(a):
     def prep():
         import prepare
         setup_job(job, view); CH = {'back': {'auto': 'long', 'off': 'long', 'add': 'both', 'replace': 'timeline'}, 'side': {'auto': 'timeline', 'add': 'timeline', 'replace': 'timeline', 'off': 'none'}}[view][a.charts]
-        prepare.prepare(job, a.video, a.labels, view, a.name, a.height or 1.80, dict(handle=a.handle, charts=CH, height_given=a.height is not None, qc_badge=a.qc_badge))
+        prepare.prepare(job, a.video, a.labels, view, a.name, a.height or 1.80, hand=a.hand, overrides=dict(handle=a.handle, charts=CH, height_given=a.height is not None, qc_badge=a.qc_badge))
         setup_job(job, view)
     if frm == 0 or not os.path.exists(os.path.join(job, 'job.json')): S('prepare', prep)
     else:
@@ -136,6 +136,7 @@ if __name__ == '__main__':
     m.add_argument('--video', required=True); m.add_argument('--labels', required=True, help='CVAT "video 1.1" export (zip or annotations.xml)'); m.add_argument('--name', required=True)
     m.add_argument('--height', type=float, default=None, help='player height in metres (side view scale, back view cross-check); 1.80 is assumed if omitted (and the reliability grade is capped)')
     m.add_argument('--charts', choices=['auto', 'off', 'add', 'replace'], default='auto', help='posture-timeline charts slide. back: auto/off = long shot only, add = long shot + charts, replace = charts instead of the long shot. side: auto/add/replace = charts, off = none')
+    m.add_argument('--hand', choices=['auto', 'right', 'left'], default='auto', help="racket hand; auto = the wrist nearest the handle at contact. Left-handers are mirrored (video + labels) so the pipeline sees a right-hander; numbers are symmetric, the avatar in the reel is drawn right-handed")
     m.add_argument('--qc-badge', action='store_true', help='print the reliability grade on the sources slide'); m.add_argument('--handle', default='@tennismad.ai', help='Instagram handle printed on every frame'); m.add_argument('--draft', action='store_true', help='faster, noisier render (1 sample instead of 4)')
     m.add_argument('--work', default=os.path.join(KIT, 'work')); m.add_argument('--out', default=os.path.join(KIT, 'output')); m.add_argument('--from', dest='from_stage', choices=STAGES_BACK); m.add_argument('--until', choices=STAGES_BACK, help='stop after this stage')
     sp.add_parser('check'); a = ap.parse_args()

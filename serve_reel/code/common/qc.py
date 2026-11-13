@@ -33,10 +33,12 @@ try: M_ = json.load(open(SP + '/' + ANA + '/metrics.json'))
 except Exception: M_ = {}
 
 # ------------------------------------------------------------------ VIDEO
-short = min(W_IMG, H_IMG)
-chk('V_res', 'video', lin(short, 360, 720), '%dx%d' % (W_IMG, H_IMG), 'Frame size %dx%d (short side %d px; 720+ is the standard).' % (W_IMG, H_IMG, short),
-    'اندازه‌ی تصویر %dx%d (ضلع کوتاه %d پیکسل؛ استاندارد ۷۲۰ به بالا).' % (W_IMG, H_IMG, short), 0.7,
+WS, HS = int(JC.get('W_src', W_IMG)), int(JC.get('H_src', H_IMG)); short = min(WS, HS)
+chk('V_res', 'video', lin(short, 360, 720), '%dx%d' % (WS, HS), 'Frame size %dx%d (short side %d px; 720+ is the standard).' % (WS, HS, short),
+    'اندازه‌ی تصویر %dx%d (ضلع کوتاه %d پیکسل؛ استاندارد ۷۲۰ به بالا).' % (WS, HS, short), 0.7,
     action_en='Film at 1080p or at least 720p.', action_fa='با کیفیت ۱۰۸۰p یا دست‌کم ۷۲۰p فیلم بگیرید.')
+if JC.get('landscape'): chk('V_orient', 'video', 50, 'landscape', 'Landscape footage is untested: the pipeline was developed and checked on portrait phone video.', 'ویدیوی افقی تست نشده است: خط لوله روی ویدیوی عمودی گوشی توسعه و بررسی شده.', 0.8, False, 'Film in portrait orientation.', 'ویدیو را عمودی (پرتره) بگیرید.')
+if JC.get('mirrored'): chk('V_hand', 'video', 100, 'mirrored', 'Left-handed player detected: video and labels were mirrored so that the analysis sees a right-hander (numbers are symmetric; the avatar in the reel is drawn right-handed).', 'بازیکن چپ‌دست تشخیص داده شد: ویدیو و لیبل‌ها آینه شدند تا تحلیل مثل راست‌دست انجام شود (اعداد متقارن‌اند؛ آواتار ریل راست‌دست رسم می‌شود).', 0.1, False)
 fps = float(JC.get('fps_real') or 30)
 dts = np.diff(pts[max(0, w0):N]) * 1000 if pts is not None and len(pts) > 3 else None
 vfr = '' if dts is None else (' VFR: frame gaps %d-%d ms.' % (dts.min(), dts.max()) if dts.max() > 1.3 * dts.min() else '')
@@ -181,7 +183,7 @@ try:
     except Exception: pass
     ch = float(M_['contact']['height']); rc = ch / H_PL
     chk('C_contact_h', 'scale', 100 - lin(abs(rc - 1.55), 0.12, 0.30) , round(rc, 2), 'Contact height %.2f m = %.2f x player height (typical serves: 1.3-1.75).' % (ch, rc),
-        'ارتفاع تماس %s متر = %s برابر قد (سرو معمولی: ۱٫۳ تا ۱٫۷۵).' % (round(ch, 2), round(rc, 2)), 1.0, False)
+        'ارتفاع تماس %s متر = %s برابر قد (سرو معمولی: ۱٫۳ تا ۱٫۷۵).' % (round(ch, 2), round(rc, 2)), 1.0, abs(rc - 1.55) > 0.5)
 except Exception as e: print('qc: height/3D checks skipped:', e)
 lt, bt = logtext('lift.log'), logtext('ball.log')
 m = re.findall(r'min foot z\s+(-?[\d.]+)', lt)
